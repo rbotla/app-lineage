@@ -2,15 +2,16 @@ const async = require('async');
 const queryDB = require('../dbconnector.js').query;
 
 class GraphCtrl {
-
-
   getNodes (req, res) {
     queryDB(
-      "MATCH (n:Person) RETURN n", { },
+      `
+      MATCH  (n)-[l:SENDS]->(m)
+      RETURN n.name,m.name
+      `, { },
       function(data) {
         console.log(data);
-        const _data = data.map(x => x._fields[0].labels[0] + ' - ' + x._fields[0].properties.name);
-        res.send(_data);
+        // const _data = data.map(x => x._fields[0].labels[0] + ' - ' + x._fields[0].properties.name);
+        res.send(data);
           // commentCount = res[0].get("count").toString(); // fetch current rant count
       },
       function(err) {
@@ -30,18 +31,23 @@ class GraphCtrl {
   }
 
   addNewLink (req, res) {
+    const {source, link, target} = req.body;
+    const query =  `
+      MERGE (src:App {name: "${source}"})
+      MERGE (tgt:App {name: "${target}"})
+      MERGE (src)-[link:${link}]->(tgt) 
+      RETURN src,link,tgt
+      `;
+    console.log(source, link, target, query);
     queryDB(
-      "MATCH (n:Person) RETURN n", { },
+      query
+      , { },
       function(data) {
-        console.log(data);
-        const _data = data.map(x => x._fields[0].labels[0] + ' - ' + x._fields[0].properties.name);
-        res.send(_data);
-          // commentCount = res[0].get("count").toString(); // fetch current rant count
+        this.getNodes(res, req);
       },
       function(err) {
-          //onError(err);
-          console.error(err.message);
-          res.send(err.message);
+        console.error(err.message);
+        res.send(err.message);
       });
   };
 

@@ -1,14 +1,13 @@
 import customAxios from '../../custom-axios';
 
-export function saveNewElementCompleted () {
+export function saveNewElementCompleted (data) {
 	return  {
 		type: "SAVE_NEW_CONNECTION_COMPLETED",
-		payload: {}
+		payload: data
 	}
 }
 
-export function saveNewNode( source, link, target ) {
-	console.log(source, link, target);
+export function saveNewNode ( source, link, target ) {
 	return (dispatch) => {
 		return customAxios('nodes', {
 			method: "POST",
@@ -22,6 +21,17 @@ export function saveNewNode( source, link, target ) {
       	target: target
       })
 		})
-		.then((newData) => dispatch(saveNewElementCompleted()))
+		.then((res) => res.data)
+		.then((newData) => dispatch(saveNewElementCompleted(newData)))
+	}
+}
+
+export function getAllNodes () {
+	return (dispatch) => {
+		return customAxios('nodes', {
+			method: "GET"
+		})
+		.then((res) => res.data)
+		.then((newData) => dispatch(saveNewElementCompleted(newData)))
 	}
 }

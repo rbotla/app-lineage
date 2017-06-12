@@ -1,0 +1,57 @@
+[
+   {
+      "source":"Ultipro",
+      "target":"Oracle iExpense",
+      "type":"suit"
+   },
+   {
+      "source":"Ultipro",
+      "target":"Cloud Coach",
+      "type":"suit"
+   },
+   {
+      "source":"Ultipro",
+      "target":"RemedyForce",
+      "type":"suit"
+   },
+   {
+      "source":"Ultipro",
+      "target":"Oracle ERP",
+      "type":"suit"
+   },
+   {
+      "source":"Oracle ERP",
+      "target":"Cloud Coach",
+      "type":"suit"
+   },
+   {
+      "source":"RemedyForce",
+      "target":"Oracle iExpense",
+      "type":"suit"
+   },
+   {
+      "source":"RemedyForce",
+      "target":"Cloud Coach",
+      "type":"suit"
+   },
+   {
+      "source":"Cloud Coach",
+      "target":"SBP",
+      "type":"suit"
+   },
+   {
+      "source":"Cloud Coach",
+      "target":"RemedyForce",
+      "type":"suit"
+   },
+   {
+      "source":"SBP",
+      "target":"Salesforce",
+      "type":"suit"
+   },
+   {
+      "source":"SBP",
+      "target":"Oracle ERP",
+      "type":"suit"
+   }
+]

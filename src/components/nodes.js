@@ -10,6 +10,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import * as actions from '../services/nodes/nodes-actions';
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
+import ForcedGraph from './forced-graph';
 
 injectTapEventPlugin();
 
@@ -42,6 +43,8 @@ class Nodes extends Component {
 	constructor(props) {
 		super(props);
 		this.save = this.save.bind(this);
+    this.getNodes = this.getNodes.bind(this);
+    this.props.actions.getAllNodes();
 	}
   state = {
     srcValue: 'Ultipro',
@@ -54,16 +57,17 @@ class Nodes extends Component {
   handleLinkChange = (event, index, value) => this.setState({linkValue: value});
 
   save() {
-  	actions.saveNewNode(this.state.srcValue, this.state.linkValue, this.state.tgtValue);
+  	this.props.actions.saveNewNode(this.state.srcValue, this.state.linkValue, this.state.tgtValue);
+  }
+
+  getNodes() {
+    this.props.actions.getAllNodes();
   }
 
 	render() {
 		return (
       <MuiThemeProvider muiTheme={muiTheme} >
 				<div style={muiTheme.body}>
-
-					{this.props.message ? <span style={{color: 'red'}}>{this.props.message}</span> : null}
-
 	        <br />
 	        <SelectField
 	          value={this.state.srcValue}
@@ -88,6 +92,9 @@ class Nodes extends Component {
 	        </SelectField>
 	        <br /><br />
 					<RaisedButton label="Save" primary={true} onTouchTap={this.save}/>
+          <RaisedButton label="Get all nodes" primary={true} onTouchTap={this.getNodes}/>
+          <hr />
+          <ForcedGraph data={this.props.nodes_list} />
 				</div>
       </MuiThemeProvider>
 		)
@@ -98,13 +105,15 @@ class Nodes extends Component {
 export const mapStateToProps = ( state ) => {
   return (
     { 
-    	message: state.nodes.message
+    	nodes_list: state.nodes.nodes_list
     }
   )
 }
 
-export const mapDispatchToProps = (dispatch) => ({
+export const mapDispatchToProps = (dispatch) => {
+	console.log(dispatch);
+	return ({
   actions: bindActionCreators(actions, dispatch)
-});
+})};
 
 export default connect (mapStateToProps, mapDispatchToProps) (Nodes);
