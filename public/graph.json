@@ -1,57 +1,16 @@
 [
-   {
-      "source":"Ultipro",
-      "target":"Oracle iExpense",
-      "type":"suit"
-   },
-   {
-      "source":"Ultipro",
-      "target":"Cloud Coach",
-      "type":"suit"
-   },
-   {
-      "source":"Ultipro",
-      "target":"RemedyForce",
-      "type":"suit"
-   },
-   {
-      "source":"Ultipro",
-      "target":"Oracle ERP",
-      "type":"suit"
-   },
-   {
-      "source":"Oracle ERP",
-      "target":"Cloud Coach",
-      "type":"suit"
-   },
-   {
-      "source":"RemedyForce",
-      "target":"Oracle iExpense",
-      "type":"suit"
-   },
-   {
-      "source":"RemedyForce",
-      "target":"Cloud Coach",
-      "type":"suit"
-   },
-   {
-      "source":"Cloud Coach",
-      "target":"SBP",
-      "type":"suit"
-   },
-   {
-      "source":"Cloud Coach",
-      "target":"RemedyForce",
-      "type":"suit"
-   },
-   {
-      "source":"SBP",
-      "target":"Salesforce",
-      "type":"suit"
-   },
-   {
-      "source":"SBP",
-      "target":"Oracle ERP",
-      "type":"suit"
-   }
+  {"source": "Billform", "target": "SBP"},
+  {"source": "CommonFeed", "target": "Billform"},
+  {"source": "GlobalScape", "target": "SBP"},
+  {"source": "MEDI", "target": "GlobalScape"},
+  {"source": "CHAPIN", "target": "GlobalScape"},
+  {"source": "CLINICIAN", "target": "GlobalScape"},
+  {"source": "Consumer Engagement", "target": "GlobalScape"},
+  {"source": "Express Bill", "target": "SBP"},
+  {"source": "FVTech", "target": "SBP"},
+  {"source": "Realtime", "target": "SBP"},
+  {"source": "OKC", "target": "Billform"},
+  {"source": "SBP", "target": "PPPM"},
+  {"source": "SBP", "target": "EDW"},
+  {"source": "SBP", "target": "Oracle AR"}
 ]

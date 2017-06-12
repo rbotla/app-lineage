@@ -1,132 +1,76 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
-
-.node {
-    stroke: #fff;
-    stroke-width: 1.5px;
-}
-.link {
-    stroke: #999;
-    stroke-opacity: .6;
-}
-
-.svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%; /* aspect ratio */
-    vertical-align: top;
-    overflow: hidden;
-}
-.svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
-}
-
-</style>
+<head>
+  <title>Graph</title>
+  <link rel="stylesheet" href="./graph.css">
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="./graph-utils.js"></script>
+</head>
 <body>
-<div id="chartId"></div>
-<script src="https://d3js.org/d3.v3.min.js"></script>
+  <div id="chartId"></div> 
+  <script>
+    //Constants for the SVG
+    var width = window.innerWidth,
+        height = window.innerHeight;
 
-<script>
+    //Set up the colour scale
+    var color = d3.scale.category20();
 
-//Constants for the SVG
-var width = 300,
-    height = 400;
+    //Set up the force layout
+    var force = d3.layout.force()
+        .charge(-300)
+        .linkDistance(60)
+        .size([width, height]);
 
-//Set up the colour scale
-var color = d3.scale.category20();
+    var svg = d3.select("div#chartId")
+       .append("div")
+       .classed("svg-container", true) //container class to make it responsive
+       .append("svg")
+       .attr("preserveAspectRatio", "xMinYMin meet")
+       .attr("viewBox", "0 0 "+width + " " + height)
+       .classed("svg-content-responsive", true); 
 
-//Set up the force layout
-var force = d3.layout.force()
-    .charge(-300)
-    .linkDistance(60)
-    .size([width, height]);
+    d3.json('graph.json', data => {
 
-//Append a SVG to the body of the html page. Assign this SVG as an object to svg
-// var svg = d3.select("body").append("svg")
-//     .attr("width", width)
-//     .attr("height", height);
+      // Trasnform data as expected by d3 forced graph
+      const graph = transformData(data); 
 
-var svg = d3.select("div#chartId")
-   .append("div")
-   .classed("svg-container", true) //container class to make it responsive
-   .append("svg")
-   .attr("preserveAspectRatio", "xMinYMin meet")
-   .attr("viewBox", "0 0 600 400")
-   .classed("svg-content-responsive", true); 
+      //Creates the graph data structure out of the json data
+      // After this call, graph nodes and links are mutated to 
+      // add x,y co-ordinates
+      force.nodes(graph.nodes)
+          .links(graph.links)
+          .start();
 
-d3.json('graph.json', data => {
-  let nodesList = [];
-  data.map(x => {
-    nodesList.indexOf(x.source) === -1 ? nodesList.push( x.source ) : null;
-    nodesList.indexOf(x.target)  === -1 ? nodesList.push( x.target ) : null;
-  })
+      //Create all the line svgs but without locations yet
+      var link = svg.selectAll(".link")
+          .data(graph.links)
+          .enter().append("line")
+          .attr("class", "link")
+          .style("stroke-width", d => 2)
 
-  const nodes = nodesList.map( x => ({name: x, group: 1}));
-  const links = data.map( x => {
-    const sIndex = nodesList.indexOf(x.source);
-    const tIndex = nodesList.indexOf(x.target);
-    return ( {source: sIndex, target: tIndex} )
-  });
+      //Do the same with the circles for the nodes - no 
+      var node = svg.selectAll(".node")
+          .data(graph.nodes)
+          .enter().append("circle")
+          .attr("class", "node")
+          .attr("r", 14)
+          .attr("fill", "#F42A4D")
+          // .style("fill", d => color(d.group))
+          .call(force.drag);
 
-console.log(links);
-  const graph = {nodes: [...nodes], links: [...links]};
+      //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
+      force.on("tick", function () {
+          link.attr("x1", d => d.source.x)
+              .attr("y1", d => d.source.y)
+              .attr("x2", d => d.target.x)
+              .attr("y2", d => d.target.y);
 
-console.log(graph.nodes, graph.links);
-
-  //Creates the graph data structure out of the json data
-  force.nodes(graph.nodes)
-      .links(graph.links)
-      .start();
-
-  //Create all the line svgs but without locations yet
-  var link = svg.selectAll(".link")
-      .data(graph.links)
-      .enter().append("line")
-      .attr("class", "link")
-      .style("stroke-width", function (d) {
-      return 2;
-  });
-
-  //Do the same with the circles for the nodes - no 
-  var node = svg.selectAll(".node")
-      .data(graph.nodes)
-      .enter().append("circle")
-      .attr("class", "node")
-      .attr("r", 8)
-      .style("fill", function (d) {
-      return color(d.group);
-  })
-      .call(force.drag);
-
-  //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
-  force.on("tick", function () {
-      link.attr("x1", function (d) {
-          return d.source.x;
-      })
-          .attr("y1", function (d) {
-          return d.source.y;
-      })
-          .attr("x2", function (d) {
-          return d.target.x;
-      })
-          .attr("y2", function (d) {
-          return d.target.y;
+          node.attr("cx", d => d.x)
+              .attr("cy", d => d.y);
       });
 
-      node.attr("cx", function (d) {
-          return d.x;
-      })
-          .attr("cy", function (d) {
-          return d.y;
-      });
-  });
-
-});
-
-
-</script>
+    });
+  </script>
+</body>
+</html>
